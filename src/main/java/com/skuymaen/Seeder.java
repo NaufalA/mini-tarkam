@@ -1,5 +1,8 @@
 package com.skuymaen;
 
+import com.skuymaen.features.match.MatchRepository;
+import com.skuymaen.features.match.MatchService;
+import com.skuymaen.features.match.entities.Match;
 import com.skuymaen.features.player.PlayerService;
 import com.skuymaen.features.player.entities.Nationality;
 import com.skuymaen.features.player.entities.Player;
@@ -33,6 +36,9 @@ public class Seeder {
         PlayerTransferRepository playerTransferRepository = new PlayerTransferRepository(em);
         PlayerTransferService playerTransferService = new PlayerTransferService(playerTransferRepository);
 
+        MatchRepository matchRepository = new MatchRepository(em);
+        MatchService matchService = new MatchService(matchRepository);
+
 //        List<Nationality> nationalities = new ArrayList<>(Arrays.asList(
 //                new Nationality("INA", "Indonesia"),
 //                new Nationality("PHI", "Philippines"),
@@ -54,7 +60,7 @@ public class Seeder {
 //        ));
 //        createPlayers(playerService, nationalities, positions, 20);
 
-        List<Player> players = playerService.getAll();
+//        List<Player> players = playerService.getAll();
 //        players.forEach(p -> {
 //            System.out.println(p);
 //            System.out.println(p.getSkill());
@@ -66,23 +72,38 @@ public class Seeder {
 //                new City("Malang"),
 //                new City("Surabaya")
 //        ));
-//        createTeams(teamService, cities, 3);
-
-        List<Team> teams = teamService.getAll();
+//        createTeams(teamService, cities, 3, 7);
+//
+//        List<Team> teams = teamService.getAll();
 //        teams.forEach(System.out::println);
 
-        createTransfers(playerTransferService, players, teams);
+//        createTransfers(playerTransferService, players, teams);
+//
+//        List<PlayerTransfer> transfers = playerTransferService.getAll();
+//        transfers.forEach(pt -> {
+//            StringBuilder output = new StringBuilder(pt.getPlayer().getPlayerName());
+//            if (pt.getSourceTeam() != null) {
+//                output.append(" From ").append(pt.getSourceTeam().getTeamName());
+//            }
+//            output.append(" To ").append(pt.getRecipientTeam().getTeamName());
+//            output.append(" At ").append(pt.getTransferDate());
+//
+//            System.out.println(output);
+//        });
 
-        playerTransferService.getAll().forEach(pt -> {
-            StringBuilder output = new StringBuilder(pt.getPlayer().getPlayerName());
-            if (pt.getSourceTeam() != null) {
-                output.append(" From ").append(pt.getSourceTeam().getTeamName());
-            }
-            output.append(" To ").append(pt.getRecipientTeam().getTeamName());
-            output.append(" At ").append(pt.getTransferDate());
+//        createMatches(matchService, teams, 20);
 
-            System.out.println(output);
-        });
+//        List<Match> matches = matchService.getAll();
+//        int i = 0;
+//        for (Match m : matches) {
+//            String output =
+//                    ++i + ".\t" +
+//                            m.getHomeTeam().getTeamName() + "\t" +
+//                            m.getHomeScore() + " - " + m.getAwayScore() +
+//                            "\t" + m.getAwayTeam().getTeamName();
+//
+//            System.out.println(output);
+//        }
 
         JPAUtility.close();
     }
@@ -110,9 +131,9 @@ public class Seeder {
         }
     }
 
-    private static void createTeams(TeamService teamService, List<City> cities, Integer size) {
+    private static void createTeams(TeamService teamService, List<City> cities, Integer start, Integer size) {
         Random random = new Random();
-        for (int i = 0; i < size; i++) {
+        for (int i = start; i < start + size; i++) {
             Team team = new Team();
             team.setTeamCode("TIM" + (i + 1));
             team.setTeamName("Team " + (i + 1));
@@ -132,10 +153,7 @@ public class Seeder {
                 PlayerTransfer pt = playerTransferService.transferPlayer(
                         player,
                         teams.get(teamIndex),
-                        new Date(
-                                Date.valueOf("2020-12-14").getTime() +
-                                        TimeUnit.DAYS.toMillis((random.nextInt(30)) * 14L)
-                        )
+                        generateDate("2020-12-14", (random.nextInt(30)) * 14L)
                 );
                 teamIndex = (teamIndex + 1) % teams.size();
 
@@ -150,5 +168,29 @@ public class Seeder {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    private static void createMatches(MatchService matchService, List<Team> teams, Integer size) {
+        Random random = new Random();
+        for (int i = 0; i < size; i++) {
+            Match match = new Match();
+            match.setHomeTeam(teams.get(random.nextInt(teams.size())));
+            do {
+                match.setAwayTeam(teams.get(random.nextInt(teams.size())));
+            } while (match.getHomeTeam() == match.getAwayTeam());
+            match.setMatchDate(generateDate("2021-01-21", (random.nextInt(10)) * 7L));
+            match.setHomeScore(random.nextInt(10));
+            match.setAwayScore(random.nextInt(10));
+
+            matchService.create(match);
+        }
+    }
+
+    private static Date generateDate(String baseDate, Long increments) {
+        return
+                new Date(
+                        Date.valueOf(baseDate).getTime() +
+                                TimeUnit.DAYS.toMillis(increments)
+                );
     }
 }

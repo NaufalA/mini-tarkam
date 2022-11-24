@@ -12,6 +12,7 @@
         <class>com.skuymaen.features.team.entities.Team</class>
         <class>com.skuymaen.features.team.entities.City</class>
         <class>com.skuymaen.features.playertransfer.entities.PlayerTransfer</class>
+        <class>com.skuymaen.features.match.entities.Match</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="javax.persistence.jdbc.url"
