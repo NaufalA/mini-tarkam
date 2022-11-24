@@ -19,7 +19,7 @@ public class MatchPresenter {
         this.matchService = matchService;
     }
 
-    public void entry() {
+    public void run() {
         boolean stop = false;
         do {
             StringHelper.printHeader("Standings");

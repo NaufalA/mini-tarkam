@@ -28,7 +28,7 @@ public class PlayerPresenter {
         this.teamService = teamService;
     }
 
-    public void entry() {
+    public void run() {
         boolean stop = false;
         do {
             StringHelper.printHeader("Manage Players");

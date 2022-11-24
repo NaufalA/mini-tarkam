@@ -14,6 +14,7 @@ import com.skuymaen.features.playertransfer.PlayerTransferRepository;
 import com.skuymaen.features.playertransfer.PlayerTransferService;
 import com.skuymaen.features.playertransfer.interfaces.IPlayerTransferRepository;
 import com.skuymaen.features.playertransfer.interfaces.IPlayerTransferService;
+import com.skuymaen.features.team.TeamPresenter;
 import com.skuymaen.features.team.TeamRepository;
 import com.skuymaen.features.team.TeamService;
 import com.skuymaen.features.team.interfaces.ITeamRepository;
@@ -41,6 +42,7 @@ public class Main {
 
         MatchPresenter matchPresenter = new MatchPresenter(matchService);
         PlayerPresenter playerPresenter = new PlayerPresenter(playerService, playerTransferService, teamService);
+        TeamPresenter teamPresenter = new TeamPresenter(teamService, playerTransferService);
 
         boolean stop = false;
         do {
@@ -55,12 +57,13 @@ public class Main {
             int choice = InputHelper.inputInt();
             switch (choice) {
                 case 1:
-                    playerPresenter.entry();
+                    playerPresenter.run();
                     break;
                 case 2:
+                    teamPresenter.run();
                     break;
                 case 3:
-                    matchPresenter.entry();
+                    matchPresenter.run();
                     break;
                 case 0:
                     stop = InputHelper.confirmation("Are you sure?");
