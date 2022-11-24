@@ -80,60 +80,8 @@ public class Seeder {
 
 //        createTransfers(playerTransferService, players, teams);
 //
-//        List<PlayerTransfer> transfers = playerTransferService.getAll();
-//        transfers.forEach(pt -> {
-//            StringBuilder output = new StringBuilder(pt.getPlayer().getPlayerName());
-//            if (pt.getSourceTeam() != null) {
-//                output.append(" From ").append(pt.getSourceTeam().getTeamName());
-//            }
-//            output.append(" To ").append(pt.getRecipientTeam().getTeamName());
-//            output.append(" At ").append(pt.getTransferDate());
-//
-//            System.out.println(output);
-//        });
-
 //        createMatches(matchService, teams, 20);
 
-//        List<Match> matches = matchService.getAll();
-//        int i = 0;
-//        for (Match m : matches) {
-//            String output =
-//                    ++i + ".\t" +
-//                            m.getHomeTeam().getTeamName() + "\t" +
-//                            m.getHomeScore() + " - " + m.getAwayScore() +
-//                            "\t" + m.getAwayTeam().getTeamName();
-//
-//            System.out.println(output);
-//        }
-
-        Map<Team, Standing> standings = matchService.getStandings();
-        System.out.println("|| \t\t | " +
-                "Team\t\t | " +
-                "MP\t | " +
-                "W\t | " +
-                "D\t | " +
-                "L\t | " +
-                "GF\t | " +
-                "GA\t | " +
-                "GD\t | " +
-                "Pts\t ||"
-        );
-        int i = 0;
-        for (Map.Entry<Team, Standing> standing : standings.entrySet()) {
-            Team t = standing.getKey();
-            Standing s = standing.getValue();
-            System.out.println("|| " + ++i + "\t | " +
-                    t.getTeamName() + "\t | " +
-                    s.getMatchesPlayed() + "\t | " +
-                    s.getWins() + "\t | " +
-                    s.getDraws() + "\t | " +
-                    s.getLosses() + "\t | " +
-                    s.getGoalsFor() + "\t | " +
-                    s.getGoalsAgainst() + "\t | " +
-                    s.getGoalDifference() + "\t | " +
-                    s.getPoints() + "\t ||"
-            );
-        }
 
         JPAUtility.close();
     }

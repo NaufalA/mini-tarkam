@@ -2,9 +2,9 @@ package com.skuymaen.shared.utils;
 
 public class StringHelper {
     public static void printHeader(String title) {
-        printSeparator("=", 30);
+        printSeparator("=", 100);
         System.out.println(title);
-        printSeparator("-", 30);
+        printSeparator("-", 100);
     }
 
     public static void printInputPrompt(String prompt) {

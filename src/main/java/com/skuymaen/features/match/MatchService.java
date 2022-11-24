@@ -7,10 +7,7 @@ import com.skuymaen.features.team.entities.Team;
 import com.skuymaen.shared.classes.BaseService;
 import com.skuymaen.shared.interfaces.IRepository;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MatchService extends BaseService<Match, Long> implements IMatchService {
@@ -22,17 +19,26 @@ public class MatchService extends BaseService<Match, Long> implements IMatchServ
     public Map<Team, Standing> getStandings() {
         List<Match> matches = getAll();
 
-        Map<Team, Standing> standings = new HashMap<>();
+        Map<Team, Standing> standings = new LinkedHashMap<>();
 
         matches.forEach(m -> {
-            Standing homeStanding = standings.get(m);
-            if (homeStanding == null) homeStanding = new Standing();
-            Standing awayStanding = standings.get(m);
-            if (awayStanding == null) awayStanding = new Standing();
+            boolean newHome = false;
+            Standing homeStanding = standings.get(m.getHomeTeam());
+            if (homeStanding == null) {
+                newHome = true;
+                homeStanding = new Standing();
+            }
+            boolean newAway = false;
+            Standing awayStanding = standings.get(m.getAwayTeam());
+            if (awayStanding == null) {
+                newAway = true;
+                awayStanding = new Standing();
+            }
 
+            boolean draw = Objects.equals(m.getHomeScore(), m.getAwayScore());
             boolean homeWin = m.getHomeScore() > m.getAwayScore();
-            boolean draw = m.getHomeScore() > m.getAwayScore();
             homeStanding.setMatchesPlayed(homeStanding.getMatchesPlayed() + 1);
+            awayStanding.setMatchesPlayed(awayStanding.getMatchesPlayed() + 1);
             if (draw) {
                 homeStanding.setDraws(homeStanding.getDraws() + 1);
                 awayStanding.setDraws(awayStanding.getDraws() + 1);
@@ -48,18 +54,20 @@ public class MatchService extends BaseService<Match, Long> implements IMatchServ
             awayStanding.setGoalsFor(awayStanding.getGoalsFor() + m.getAwayScore());
             awayStanding.setGoalsAgainst(awayStanding.getGoalsAgainst() + m.getHomeScore());
 
-            homeStanding.setGoalDifference(homeStanding.getGoalsFor() + homeStanding.getGoalsAgainst());
-            awayStanding.setGoalDifference(awayStanding.getGoalsFor() + awayStanding.getGoalsAgainst());
+            homeStanding.setGoalDifference(homeStanding.getGoalsFor() - homeStanding.getGoalsAgainst());
+            awayStanding.setGoalDifference(awayStanding.getGoalsFor() - awayStanding.getGoalsAgainst());
 
             homeStanding.setPoints(countPoints(homeStanding));
             awayStanding.setPoints(countPoints(awayStanding));
 
-            standings.put(m.getHomeTeam(), homeStanding);
-            standings.put(m.getAwayTeam(), awayStanding);
+            if (newHome) standings.put(m.getHomeTeam(), homeStanding);
+            if (newAway) standings.put(m.getAwayTeam(), awayStanding);
         });
+
+        Comparator<Map.Entry<Team, Standing>> sortPoints = Comparator.comparingInt(ts -> ts.getValue().getPoints());
         return standings.entrySet().stream()
-                .sorted(Comparator.comparing(ts -> ts.getValue().getPoints()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, HashMap::new));
+                .sorted(sortPoints.reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
 
     private Integer countPoints(Standing standing) {
