@@ -22,17 +22,15 @@ public class MatchService extends BaseService<Match, Long> implements IMatchServ
         Map<Team, Standing> standings = new LinkedHashMap<>();
 
         matches.forEach(m -> {
-            boolean newHome = false;
             Standing homeStanding = standings.get(m.getHomeTeam());
             if (homeStanding == null) {
-                newHome = true;
                 homeStanding = new Standing();
+                standings.put(m.getHomeTeam(), homeStanding);
             }
-            boolean newAway = false;
             Standing awayStanding = standings.get(m.getAwayTeam());
             if (awayStanding == null) {
-                newAway = true;
                 awayStanding = new Standing();
+                standings.put(m.getAwayTeam(), awayStanding);
             }
 
             boolean draw = Objects.equals(m.getHomeScore(), m.getAwayScore());
@@ -60,8 +58,6 @@ public class MatchService extends BaseService<Match, Long> implements IMatchServ
             homeStanding.setPoints(countPoints(homeStanding));
             awayStanding.setPoints(countPoints(awayStanding));
 
-            if (newHome) standings.put(m.getHomeTeam(), homeStanding);
-            if (newAway) standings.put(m.getAwayTeam(), awayStanding);
         });
 
         Comparator<Map.Entry<Team, Standing>> sortPoints = Comparator.comparingInt(ts -> ts.getValue().getPoints());

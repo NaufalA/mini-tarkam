@@ -42,7 +42,7 @@ public class Main {
 
         MatchPresenter matchPresenter = new MatchPresenter(matchService);
         PlayerPresenter playerPresenter = new PlayerPresenter(playerService, playerTransferService, teamService);
-        TeamPresenter teamPresenter = new TeamPresenter(teamService, playerTransferService);
+        TeamPresenter teamPresenter = new TeamPresenter(teamService, playerService, playerTransferService);
 
         boolean stop = false;
         do {

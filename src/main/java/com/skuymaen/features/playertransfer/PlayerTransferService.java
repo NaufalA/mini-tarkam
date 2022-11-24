@@ -8,6 +8,7 @@ import com.skuymaen.features.team.entities.Team;
 import com.skuymaen.shared.classes.BaseService;
 
 import java.util.Date;
+import java.util.List;
 
 public class PlayerTransferService extends BaseService<PlayerTransfer, Long> implements IPlayerTransferService {
     private final IPlayerTransferRepository playerTransferRepository;
@@ -45,5 +46,10 @@ public class PlayerTransferService extends BaseService<PlayerTransfer, Long> imp
     @Override
     public PlayerTransfer getActiveTransfer(Player player) {
         return playerTransferRepository.getActiveTransfer(player);
+    }
+
+    @Override
+    public List<PlayerTransfer> getTeamTransfers(Team team, boolean activeTransfersOnly) {
+        return playerTransferRepository.getTeamTransfers(team, activeTransfersOnly);
     }
 }
