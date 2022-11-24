@@ -3,6 +3,7 @@ package com.skuymaen;
 import com.skuymaen.features.match.MatchRepository;
 import com.skuymaen.features.match.MatchService;
 import com.skuymaen.features.match.entities.Match;
+import com.skuymaen.features.match.entities.Standing;
 import com.skuymaen.features.player.PlayerService;
 import com.skuymaen.features.player.entities.Nationality;
 import com.skuymaen.features.player.entities.Player;
@@ -104,6 +105,35 @@ public class Seeder {
 //
 //            System.out.println(output);
 //        }
+
+        Map<Team, Standing> standings = matchService.getStandings();
+        System.out.println("|| \t\t | " +
+                "Team\t\t | " +
+                "MP\t | " +
+                "W\t | " +
+                "D\t | " +
+                "L\t | " +
+                "GF\t | " +
+                "GA\t | " +
+                "GD\t | " +
+                "Pts\t ||"
+        );
+        int i = 0;
+        for (Map.Entry<Team, Standing> standing : standings.entrySet()) {
+            Team t = standing.getKey();
+            Standing s = standing.getValue();
+            System.out.println("|| " + ++i + "\t | " +
+                    t.getTeamName() + "\t | " +
+                    s.getMatchesPlayed() + "\t | " +
+                    s.getWins() + "\t | " +
+                    s.getDraws() + "\t | " +
+                    s.getLosses() + "\t | " +
+                    s.getGoalsFor() + "\t | " +
+                    s.getGoalsAgainst() + "\t | " +
+                    s.getGoalDifference() + "\t | " +
+                    s.getPoints() + "\t ||"
+            );
+        }
 
         JPAUtility.close();
     }
