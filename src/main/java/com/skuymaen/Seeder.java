@@ -128,20 +128,12 @@ public class Seeder {
         int teamIndex = 0;
         for (Player player : players) {
             try {
-                PlayerTransfer pt = playerTransferService.transferPlayer(
+                playerTransferService.transferPlayer(
                         player,
                         teams.get(teamIndex),
                         generateDate("2020-12-14", (random.nextInt(30)) * 14L)
                 );
                 teamIndex = (teamIndex + 1) % teams.size();
-
-                StringBuilder output = new StringBuilder("Transferred " + pt.getPlayer().getPlayerName());
-                if (pt.getSourceTeam() != null) {
-                    output.append(" From ").append(pt.getSourceTeam().getTeamName());
-                }
-                output.append(" To ").append(pt.getRecipientTeam().getTeamName());
-
-                System.out.println(output);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

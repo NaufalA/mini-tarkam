@@ -5,6 +5,7 @@ import com.skuymaen.features.match.MatchRepository;
 import com.skuymaen.features.match.MatchService;
 import com.skuymaen.features.match.interfaces.IMatchRepository;
 import com.skuymaen.features.match.interfaces.IMatchService;
+import com.skuymaen.features.player.PlayerPresenter;
 import com.skuymaen.features.player.PlayerRepository;
 import com.skuymaen.features.player.PlayerService;
 import com.skuymaen.features.player.interfaces.IPlayerRepository;
@@ -38,7 +39,8 @@ public class Main {
         IMatchRepository matchRepository = new MatchRepository(em);
         IMatchService matchService = new MatchService(matchRepository);
 
-        MatchPresenter matchPresenter = new MatchPresenter(matchService, playerTransferService);
+        MatchPresenter matchPresenter = new MatchPresenter(matchService);
+        PlayerPresenter playerPresenter = new PlayerPresenter(playerService, playerTransferService, teamService);
 
         boolean stop = false;
         do {
@@ -53,6 +55,7 @@ public class Main {
             int choice = InputHelper.inputInt();
             switch (choice) {
                 case 1:
+                    playerPresenter.entry();
                     break;
                 case 2:
                     break;

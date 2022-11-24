@@ -3,8 +3,6 @@ package com.skuymaen.features.match;
 import com.skuymaen.features.match.entities.Match;
 import com.skuymaen.features.match.entities.Standing;
 import com.skuymaen.features.match.interfaces.IMatchService;
-import com.skuymaen.features.playertransfer.entities.PlayerTransfer;
-import com.skuymaen.features.playertransfer.interfaces.IPlayerTransferService;
 import com.skuymaen.features.team.entities.Team;
 import com.skuymaen.shared.utils.InputHelper;
 import com.skuymaen.shared.utils.StringHelper;
@@ -16,11 +14,9 @@ import java.util.stream.Collectors;
 
 public class MatchPresenter {
     private final IMatchService matchService;
-    private final IPlayerTransferService playerTransferService;
 
-    public MatchPresenter(IMatchService matchService, IPlayerTransferService playerTransferService) {
+    public MatchPresenter(IMatchService matchService) {
         this.matchService = matchService;
-        this.playerTransferService = playerTransferService;
     }
 
     public void entry() {
@@ -30,7 +26,6 @@ public class MatchPresenter {
             System.out.println(
                     "1. View Standings\n" +
                             "2. View Matches History\n" +
-                            "3. View Transfers\n" +
                             "0. EXIT"
             );
             StringHelper.printInputPrompt("Choose menu");
@@ -41,9 +36,6 @@ public class MatchPresenter {
                     break;
                 case 2:
                     matchesMenu();
-                    break;
-                case 3:
-                    transfersMenu();
                     break;
                 case 0:
                     stop = InputHelper.confirmation("Are you sure?");
@@ -108,29 +100,5 @@ public class MatchPresenter {
 
             System.out.println(output);
         }
-    }
-
-    private void transfersMenu() {
-        StringHelper.printHeader("Player Transfers History");
-        List<PlayerTransfer> transfers =
-                playerTransferService.getAll().stream()
-                        .sorted(Comparator.comparingLong(t -> t.getTransferDate().getTime()))
-                        .collect(Collectors.toList());
-        System.out.println(
-                "Transfer Date\t\t | " +
-                "Summary"
-        );
-        transfers.forEach(pt -> {
-            StringBuilder output = new StringBuilder();
-            output.append(pt.getTransferDate()).append("\t | ");
-            output.append(pt.getPlayer().getPlayerName());
-            if (pt.getSourceTeam() != null) {
-                output.append(", ").append(pt.getSourceTeam().getTeamName());
-            }
-            output.append(" -> ").append(pt.getRecipientTeam().getTeamName());
-
-            System.out.println(output);
-        });
-
     }
 }

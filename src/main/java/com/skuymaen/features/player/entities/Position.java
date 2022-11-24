@@ -15,12 +15,12 @@ public class Position {
     @Getter
     @Setter
     @Column(name = "position_code", nullable = false, length = 5)
-    private String positionCode;
+    private String positionCode = "";
 
     @Getter
     @Setter
     @Column(name = "position_title", nullable = false, unique = true)
-    private String positionTitle;
+    private String positionTitle = "";
 
     @Getter
     @Setter
