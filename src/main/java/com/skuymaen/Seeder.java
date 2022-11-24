@@ -6,6 +6,9 @@ import com.skuymaen.features.player.entities.Player;
 import com.skuymaen.features.player.entities.Position;
 import com.skuymaen.features.player.entities.Skill;
 import com.skuymaen.features.player.PlayerRepository;
+import com.skuymaen.features.playertransfer.PlayerTransferRepository;
+import com.skuymaen.features.playertransfer.PlayerTransferService;
+import com.skuymaen.features.playertransfer.entities.PlayerTransfer;
 import com.skuymaen.features.team.TeamRepository;
 import com.skuymaen.features.team.TeamService;
 import com.skuymaen.features.team.entities.City;
@@ -14,10 +17,7 @@ import com.skuymaen.shared.utils.JPAUtility;
 import jakarta.persistence.EntityManager;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Seeder {
@@ -29,6 +29,9 @@ public class Seeder {
 
         TeamRepository teamRepository = new TeamRepository(em);
         TeamService teamService = new TeamService(teamRepository);
+
+        PlayerTransferRepository playerTransferRepository = new PlayerTransferRepository(em);
+        PlayerTransferService playerTransferService = new PlayerTransferService(playerTransferRepository);
 
 //        List<Nationality> nationalities = new ArrayList<>(Arrays.asList(
 //                new Nationality("INA", "Indonesia"),
@@ -51,20 +54,35 @@ public class Seeder {
 //        ));
 //        createPlayers(playerService, nationalities, positions, 20);
 
-//        playerService.getAll().forEach(p -> {
+        List<Player> players = playerService.getAll();
+//        players.forEach(p -> {
 //            System.out.println(p);
 //            System.out.println(p.getSkill());
 //        });
 
-        List<City> cities = new ArrayList<>(Arrays.asList(
-                new City("Jakarta"),
-                new City("Bandung"),
-                new City("Malang"),
-                new City("Surabaya")
-        ));
-        createTeams(teamService, cities, 3);
+//        List<City> cities = new ArrayList<>(Arrays.asList(
+//                new City("Jakarta"),
+//                new City("Bandung"),
+//                new City("Malang"),
+//                new City("Surabaya")
+//        ));
+//        createTeams(teamService, cities, 3);
 
-        teamService.getAll().forEach(System.out::println);
+        List<Team> teams = teamService.getAll();
+//        teams.forEach(System.out::println);
+
+        createTransfers(playerTransferService, players, teams);
+
+        playerTransferService.getAll().forEach(pt -> {
+            StringBuilder output = new StringBuilder(pt.getPlayer().getPlayerName());
+            if (pt.getSourceTeam() != null) {
+                output.append(" From ").append(pt.getSourceTeam().getTeamName());
+            }
+            output.append(" To ").append(pt.getRecipientTeam().getTeamName());
+            output.append(" At ").append(pt.getTransferDate());
+
+            System.out.println(output);
+        });
 
         JPAUtility.close();
     }
@@ -102,6 +120,35 @@ public class Seeder {
             team.setCity(cities.get(random.nextInt(cities.size())));
 
             teamService.create(team);
+        }
+    }
+
+    private static void createTransfers(PlayerTransferService playerTransferService, List<Player> players, List<Team> teams) {
+        Collections.shuffle(players);
+        Random random = new Random();
+        int teamIndex = 0;
+        for (Player player : players) {
+            try {
+                PlayerTransfer pt = playerTransferService.transferPlayer(
+                        player,
+                        teams.get(teamIndex),
+                        new Date(
+                                Date.valueOf("2020-12-14").getTime() +
+                                        TimeUnit.DAYS.toMillis((random.nextInt(30)) * 14L)
+                        )
+                );
+                teamIndex = (teamIndex + 1) % teams.size();
+
+                StringBuilder output = new StringBuilder("Transferred " + pt.getPlayer().getPlayerName());
+                if (pt.getSourceTeam() != null) {
+                    output.append(" From ").append(pt.getSourceTeam().getTeamName());
+                }
+                output.append(" To ").append(pt.getRecipientTeam().getTeamName());
+
+                System.out.println(output);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }
