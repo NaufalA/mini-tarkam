@@ -6,6 +6,10 @@ import com.skuymaen.features.player.entities.Player;
 import com.skuymaen.features.player.entities.Position;
 import com.skuymaen.features.player.entities.Skill;
 import com.skuymaen.features.player.PlayerRepository;
+import com.skuymaen.features.team.TeamRepository;
+import com.skuymaen.features.team.TeamService;
+import com.skuymaen.features.team.entities.City;
+import com.skuymaen.features.team.entities.Team;
 import com.skuymaen.shared.utils.JPAUtility;
 import jakarta.persistence.EntityManager;
 
@@ -23,31 +27,54 @@ public class Seeder {
         PlayerRepository playerRepository = new PlayerRepository(em);
         PlayerService playerService = new PlayerService(playerRepository);
 
-        List<Nationality> nationalities = new ArrayList<>(Arrays.asList(
-                new Nationality("INA", "Indonesia"),
-                new Nationality("PHI", "Philippines"),
-                new Nationality("MYA", "Myanmar"),
-                new Nationality("MAS", "Malaysia"),
-                new Nationality("SGP", "Singapore"),
-                new Nationality("THA", "Thailand"),
-                new Nationality("CAM", "Cambodia"),
-                new Nationality("VIE", "Vietnam"),
-                new Nationality("LAO", "Laos"),
-                new Nationality("BRU", "Brunei")
-        ));
+        TeamRepository teamRepository = new TeamRepository(em);
+        TeamService teamService = new TeamService(teamRepository);
 
-        List<Position> positions = new ArrayList<>(Arrays.asList(
-                new Position("GK", "Goalkeeper"),
-                new Position("S", "Striker"),
-                new Position("CB", "Center Back"),
-                new Position("CM", "Center Midfielder")
-        ));
+//        List<Nationality> nationalities = new ArrayList<>(Arrays.asList(
+//                new Nationality("INA", "Indonesia"),
+//                new Nationality("PHI", "Philippines"),
+//                new Nationality("MYA", "Myanmar"),
+//                new Nationality("MAS", "Malaysia"),
+//                new Nationality("SGP", "Singapore"),
+//                new Nationality("THA", "Thailand"),
+//                new Nationality("CAM", "Cambodia"),
+//                new Nationality("VIE", "Vietnam"),
+//                new Nationality("LAO", "Laos"),
+//                new Nationality("BRU", "Brunei")
+//        ));
+//
+//        List<Position> positions = new ArrayList<>(Arrays.asList(
+//                new Position("GK", "Goalkeeper"),
+//                new Position("S", "Striker"),
+//                new Position("CB", "Center Back"),
+//                new Position("CM", "Center Midfielder")
+//        ));
+//        createPlayers(playerService, nationalities, positions, 20);
 
+//        playerService.getAll().forEach(p -> {
+//            System.out.println(p);
+//            System.out.println(p.getSkill());
+//        });
+
+        List<City> cities = new ArrayList<>(Arrays.asList(
+                new City("Jakarta"),
+                new City("Bandung"),
+                new City("Malang"),
+                new City("Surabaya")
+        ));
+        createTeams(teamService, cities, 3);
+
+        teamService.getAll().forEach(System.out::println);
+
+        JPAUtility.close();
+    }
+
+    private static void createPlayers(PlayerService playerService, List<Nationality> nationalities, List<Position> positions, Integer size) {
         Random random = new Random();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < size; i++) {
             Player player = new Player();
             player.setPlayerName("Player " + (i + 1));
-            player.setBirthDate(new Date(Date.valueOf("1994-04-23").getTime() + TimeUnit.DAYS.toMillis((i + 1) * 3)));
+            player.setBirthDate(new Date(Date.valueOf("1994-04-23").getTime() + TimeUnit.DAYS.toMillis((i + 1) * 3L)));
             player.setHeight((float) (random.nextInt(208 + 1 - 153) + 153));
             player.setNationality(nationalities.get(random.nextInt(nationalities.size())));
             player.setPosition(positions.get(random.nextInt(positions.size())));
@@ -63,12 +90,18 @@ public class Seeder {
 
             playerService.create(player);
         }
+    }
 
-        playerService.getAll().forEach(p -> {
-            System.out.println(p);
-            System.out.println(p.getSkill());
-        });
+    private static void createTeams(TeamService teamService, List<City> cities, Integer size) {
+        Random random = new Random();
+        for (int i = 0; i < size; i++) {
+            Team team = new Team();
+            team.setTeamCode("TIM" + (i + 1));
+            team.setTeamName("Team " + (i + 1));
+            team.setEstablishDate(new Date(Date.valueOf("1990-02-11").getTime() + TimeUnit.DAYS.toMillis((i + 1) * 14L)));
+            team.setCity(cities.get(random.nextInt(cities.size())));
 
-        JPAUtility.close();
+            teamService.create(team);
+        }
     }
 }

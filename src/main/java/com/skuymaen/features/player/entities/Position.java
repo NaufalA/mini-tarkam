@@ -15,7 +15,7 @@ public class Position {
     @Getter
     @Setter
     @Column(name = "position_code", nullable = false, length = 5)
-    private String position_code;
+    private String positionCode;
 
     @Getter
     @Setter
@@ -30,8 +30,8 @@ public class Position {
 
     public Position() {}
 
-    public Position(String position_code, String positionTitle) {
-        this.position_code = position_code;
+    public Position(String positionCode, String positionTitle) {
+        this.positionCode = positionCode;
         this.positionTitle = positionTitle;
     }
 }

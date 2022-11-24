@@ -13,7 +13,7 @@ public class Nationality {
     @Getter
     @Setter
     @Column(name = "nation_code", nullable = false, length = 5)
-    private String nation_code;
+    private String nationCode;
 
     @Getter
     @Setter
@@ -23,8 +23,8 @@ public class Nationality {
     public Nationality() {
     }
 
-    public Nationality(String nation_code, String nationName) {
-        this.nation_code = nation_code;
+    public Nationality(String nationCode, String nationName) {
+        this.nationCode = nationCode;
         this.nationName = nationName;
     }
 }
