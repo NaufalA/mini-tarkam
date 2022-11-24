@@ -5,6 +5,10 @@
              version="2.2">
     <persistence-unit name="default">
         <class>com.skuymaen.shared.classes.BaseEntity</class>
+        <class>com.skuymaen.features.player.entities.Player</class>
+        <class>com.skuymaen.features.player.entities.Skill</class>
+        <class>com.skuymaen.features.player.entities.Nationality</class>
+        <class>com.skuymaen.features.player.entities.Position</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="javax.persistence.jdbc.url"

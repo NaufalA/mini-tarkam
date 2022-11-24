@@ -5,10 +5,10 @@ import com.skuymaen.shared.interfaces.IService;
 
 import java.util.List;
 
-public abstract class BaseService<T> implements IService<T> {
-    protected IRepository<T> repository;
+public abstract class BaseService<T, Id> implements IService<T, Id> {
+    protected IRepository<T, Id> repository;
 
-    public BaseService(IRepository<T> repository) {
+    public BaseService(IRepository<T, Id> repository) {
         this.repository = repository;
     }
 
@@ -23,7 +23,7 @@ public abstract class BaseService<T> implements IService<T> {
     }
 
     @Override
-    public T getById(Long id) {
+    public T getById(Id id) {
         return repository.findById(id);
     }
 
@@ -33,7 +33,7 @@ public abstract class BaseService<T> implements IService<T> {
     }
 
     @Override
-    public Long remove(Long deletedId) {
+    public Id remove(Id deletedId) {
         return repository.delete(deletedId);
     }
 }

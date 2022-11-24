@@ -2,14 +2,14 @@ package com.skuymaen.shared.interfaces;
 
 import java.util.List;
 
-public interface IService<T> {
+public interface IService<T, Id> {
     Boolean create(T newItem);
 
     List<T> getAll();
 
-    T getById(Long id);
+    T getById(Id id);
 
     T update(T updatedItem);
 
-    Long remove(Long deletedId);
+    Id remove(Id deletedId);
 }

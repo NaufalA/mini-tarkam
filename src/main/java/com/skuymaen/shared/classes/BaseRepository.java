@@ -5,7 +5,7 @@ import jakarta.persistence.EntityManager;
 
 import java.util.List;
 
-public abstract class BaseRepository<T> implements IRepository<T> {
+public abstract class BaseRepository<T, Id> implements IRepository<T, Id> {
     protected EntityManager entityManager;
 
     public BaseRepository(EntityManager entityManager) {
@@ -29,7 +29,7 @@ public abstract class BaseRepository<T> implements IRepository<T> {
     public abstract List<T> findAll();
 
     @Override
-    public abstract T findById(Long id);
+    public abstract T findById(Id id);
 
     @Override
     public T update(T updatedItem) {
@@ -45,7 +45,7 @@ public abstract class BaseRepository<T> implements IRepository<T> {
     }
 
     @Override
-    public Long delete(Long deletedId) {
+    public Id delete(Id deletedId) {
         try {
             T deletedItem = findById(deletedId);
             entityManager.getTransaction().begin();

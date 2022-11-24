@@ -2,14 +2,14 @@ package com.skuymaen.shared.interfaces;
 
 import java.util.List;
 
-public interface IRepository<T> {
+public interface IRepository<T, Id> {
     Boolean insert(T newItem);
 
     List<T> findAll();
 
-    T findById(Long id);
+    T findById(Id id);
 
     T update(T updatedItem);
 
-    Long delete(Long deletedId);
+    Id delete(Id deletedId);
 }
